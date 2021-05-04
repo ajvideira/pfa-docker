@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:5.5
+    container_name: mysql
+    restart: always
+    tty: true
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --skip-character-set-client-handshake
+    volumes:
+      - ./mysql/dbdata:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_DATABASE=pfa-docker
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - nodemysql
+
+  node:
+    container_name: node
+    build:
+      context: node
+    entrypoint: 'dockerize -wait tcp://mysql:3306 -timeout 20s node index.js '
+    tty: true
+    volumes:
+      - ./node:/app
+      - /app/node_modules
+    depends_on:
+      - mysql
+    networks:
+      - nodemysql
+      - nginxnode
+
+  nginx:
+    container_name: nginx
+    build:
+      context: nginx
+    entrypoint: "dockerize -wait http://node:3000 -timeout 20s nginx -g 'daemon off;' "
+    tty: true
+    ports:
+      - 8000:80
+    depends_on:
+      - node
+    networks:
+      - nginxnode
+
+networks:
+  nodemysql:
+    name: nodemysql
+    driver: bridge
+
+  nginxnode:
+    name: nginxnode
+    driver: bridge

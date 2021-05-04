@@ -31,3 +31,29 @@ docker run --rm -d --network desafio1 -p 8080:80 --name nginx ajvideira/pfa-dock
 ```
 
 5. Acessar pelo navegador o endereço http://localhost:8080
+
+#### Desafio 2
+
+##### Instruções:
+
+Para executar o desafio 2, siga os seguintes passos:
+
+1. Clone o projeto
+
+```sh
+git clone https://github.com/ajvideira/pfa-docker.git
+```
+
+2. Entre na pasta desafio2
+
+```sh
+cd desafio2
+```
+
+3. Rode o docker-compose
+
+```sh
+docker-compose up
+```
+
+4. Acessar pelo navegador o endereço http://localhost:8000
